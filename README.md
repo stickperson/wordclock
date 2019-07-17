@@ -1,2 +1,4 @@
-# wordclock
-Instructions to make an arduino or raspberry pi powered word clock
+# Wordclock
+Instructions how to make this
+
+![alt tag](clock.jpg)
