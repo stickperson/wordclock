@@ -12,7 +12,7 @@ class Timer:
     def tick(self):
         now = datetime.datetime.now()
         diff = now - self.last_updated
-        milliseconds = (diff.days * 24 * 60 * 60 + diff.seconds) * 1000 + diff.microseconds / 1000.0
+        milliseconds = diff.total_seconds() * 1000
         if milliseconds >= self.delay:
             self.fn()
             self.last_updated = datetime.datetime.now()
