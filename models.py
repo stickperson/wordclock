@@ -2,6 +2,22 @@ from dataclasses import dataclass
 import datetime
 
 
+
+class Timer:
+    def __init__(self, delay, fn):
+        self.delay = delay
+        self.fn = fn
+        self.last_updated = datetime.datetime.now()
+
+    def tick(self):
+        now = datetime.datetime.now()
+        diff = now - self.last_updated
+        milliseconds = (diff.days * 24 * 60 * 60 + diff.seconds) * 1000 + diff.microseconds / 1000.0
+        if milliseconds >= self.delay:
+            self.fn()
+            self.last_updated = datetime.datetime.now()
+
+
 class ConsoleDisplay:
     # Display class which prints to the console for debug purposes
     def __init__(self, rows, columns):
@@ -63,19 +79,17 @@ class Clock:
             11: 'ELEVEN',
             12: 'TWELVE'
         }
-        word_keys = set(['IT', 'IS'])
+        word_keys = set(['IT', 'IS', 'MINUTES'])
 
         if minute > 35:
-            word_keys.add('MINUTES')
             word_keys.add('TO')
         elif 5 < minute < 35:
-            word_keys.add('MINUTES')
             word_keys.add('PAST')
 
-        if minute < 5:
+        if minute <= 5:
             word_keys.remove('MINUTES')
             word_keys.add('OCLOCK')
-        elif 4 < minute <= 10:
+        elif 5 <= minute <= 10:
             word_keys.add('MFIVE')
         elif 11 <= minute <= 15:
             word_keys.add('MTEN')
@@ -155,3 +169,9 @@ if __name__ == '__main__':
 
     words = clock.determine_words(now.hour, now.minute, words)
     clock.display_words(words)
+
+    def print_hi():
+        print('hi')
+    print_timer = Timer(5000, print_hi)
+    while True:
+        print_timer.tick()
