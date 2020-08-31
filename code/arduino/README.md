@@ -1,0 +1,2 @@
+# Arduino Code
+This code is a decent starting point for running using an Arduino. A lot of things are weird (e.g. the indices used for some words) so this should only be used as a reference. Any external libraries are included in `libraries.gz`. Also, I have no idea how C/C++ works so there's probably a much better way to do all of this.
