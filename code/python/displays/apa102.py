@@ -9,8 +9,10 @@ class APA102Display:
         self.default_color = default_color
         self.reset()
 
-    def reset(self):
-        self.strip.clear_strip()
+    def batch_update(self, words):
+        for word in words:
+            for idx in range(word.start_idx, word.end_idx+1):
+                self.update_position(idx)
 
     def cleanup(self):
         self.reset()
@@ -19,14 +21,12 @@ class APA102Display:
     def display(self):
         self.strip.show()
 
-    def wheel(self, idx):
-        return self.strip.wheel(idx)
+    def reset(self):
+        self.strip.clear_strip()
 
     def update_position(self, position, color=None):
         color = color or self.default_color
         self.strip.set_pixel_rgb(position, color)
 
-    def batch_update(self, words):
-        for word in words:
-            for idx in range(word.start_idx, word.end_idx+1):
-                self.update_position(idx)
+    def wheel(self, idx):
+        return self.strip.wheel(idx)

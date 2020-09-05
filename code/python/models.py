@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import datetime
-from time import sleep
 
 
 class Timer:
@@ -24,7 +23,6 @@ class Timer:
         if milliseconds >= self.delay:
             self.fn(now=now, **self.kwargs)
             self.last_updated = datetime.datetime.now()
-
 
 
 @dataclass(frozen=True)
@@ -111,7 +109,7 @@ class Clock:
         # Adjust the hour so 12:36 reads "25 minutes to 1"
         if minute > 35:
             hour += 1
-        
+
         word_keys.add(hour_displays[hour % 12])
 
         words = [self.words[k] for k in word_keys]

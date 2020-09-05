@@ -33,6 +33,7 @@ words = {
     'OCLOCK':   Word(start_idx=25, end_idx=26, display_value='OCLOCK'),
 }
 
+
 def display_birthday(now, displayer=None):
     displayer.update()
 

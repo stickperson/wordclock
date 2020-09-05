@@ -9,7 +9,6 @@ class Rainbow:
         self.current_step = 0
         self.num_steps_per_cycle = num_steps_per_cycle
 
-
     def _update_word(self, word):
         num_leds = word.end_idx - word.start_idx + 1
         scale_factor = 255 / num_leds  # Index change between two neighboring LEDs
@@ -27,4 +26,3 @@ class Rainbow:
         for word in self.words:
             self._update_word(word)
         self.current_step += 1
-
