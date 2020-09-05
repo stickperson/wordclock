@@ -2,11 +2,16 @@ import datetime
 
 from animations import Rainbow
 from models import Clock, Timer
-from settings import display_cls, words
+from settings import birthdays, display_cls, words
 
 
-def display_birthday(now, displayer=None):
-    displayer.update()
+def display_birthday(now, displayer, birthdays, **kwargs):
+    month = now.month
+    day = now.day
+    for birthday in birthdays:
+        if birthday.month == month and birthday.day == day:
+            displayer.update()
+            return
 
 
 if __name__ == '__main__':
@@ -18,7 +23,7 @@ if __name__ == '__main__':
     clock.update(display_words)
 
     birthday_display = Rainbow(displayer, words=[words['HAPPY'], words['BIRTHDAY']])
-    birthday_timer = Timer(50, display_birthday, displayer=birthday_display)
+    birthday_timer = Timer(50, display_birthday, displayer=birthday_display, birthdays=birthdays)
     while True:
         try:
             birthday_timer.tick()
