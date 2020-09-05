@@ -1,3 +1,7 @@
+import random
+import string
+
+
 class ConsoleDisplay:
     """
     Display class which prints to the console for debugging purposes
@@ -24,8 +28,13 @@ class ConsoleDisplay:
         grid = []
         for idx in range(0, len(self.matrix), self.columns):
             grid.append(self.matrix[idx:idx+self.columns])
+        print('\n')
+        print('\n')
         for g in grid:
             print(g)
 
     def wheel(self, idx):
-        return '1'
+        return random.choice(string.ascii_letters)
+
+    def cleanup(self):
+        return

@@ -52,7 +52,7 @@ class Clock:
         self.words = words
 
     # TODO. Break into smaller functions.
-    def determine_words(self, month, day, hour, minute):
+    def _determine_words(self, hour, minute):
         # Determines which words to display based on the hour and minute. Could probably separate this into minutes/hours.
         hour_displays = {
             0: 'TWELVE',
@@ -114,14 +114,10 @@ class Clock:
         words = [self.words[k] for k in word_keys]
         return words
 
-    def update(self, words):
-        # This might not make sense here.
+    def update(self, hour, minute):
+        words = self._determine_words(hour, minute)
         to_display = []
         for word in words:
             word.color = word.color or self.color
             to_display.append(word)
         self.displayer.batch_update(to_display)
-
-    def display(self):
-        # Also might not make sense here.
-        self.displayer.display()
