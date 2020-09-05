@@ -38,7 +38,7 @@ Files for the laser cut parts are in the `lasercut` folder. You'll probably need
 
 # Electronics
 Parts list:
-* APA 102 LED strip 60/m
+* LED strip, 60/m. Note: the arduino code assumes that an APA102 strip is being used. That can easily be changed. The python code has a display class for the APA102 as well. Instructions for how to use the python code will be in the python directory.
 * Arduino UNO or Raspberry Pi Zero W
 * 9-12V, 1.5A power supply (see notes below)
 * Push buttons (x3)
