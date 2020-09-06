@@ -31,7 +31,7 @@ class APA102Display:
         color = color or self.default_color
         if isinstance(color, tuple):
             color = self.rgb_to_hex(color)
-        self.strip.set_pixel_rgb(position, color, self._bright_percent)
+        self.strip.set_pixel_rgb(position, color, self.bright_percent)
 
     def wheel(self, idx):
         return self.strip.wheel(idx)
