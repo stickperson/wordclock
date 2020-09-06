@@ -1,7 +1,7 @@
-:construction: **Under Construction** :construction:
+# :construction: Under Construction :construction:
 
 ## Introduction
-This code is broken up into several components in order to keep things modular.
+This code is broken up into several components in order to keep things modular. I haven't really thought whether or not I'd like to turn this into a package or keep it as bits semi-structured building blocks. If this were to be a package I'd need to figure out how to handle requirements etc. That could potentially influence the file/directory structure. For instance, could all displays just be in `displays.py` instead of files for each display type? ¯\\_(ツ)_/¯
 
 The `displays` directory contains files for displaying the state of the clock. Currently, there is support for the APA102 led strip and displaying to the console. The `ConsoleDisplay` is helpful for development. If you would like to use another chipset, you can implement your own display class.
 
@@ -18,6 +18,8 @@ Once this is setup, you can run `python service.py`
 
 
 ## TODO
-* ABC for displays
+* ABC for displays?
+* Think about overall structure-- does `models.py` still make sense? Where should animations and button stuff live?
 * Think about where the birthday logic should live
-* Button handlers. Maybe [this](https://github.com/gpiozero/gpiozero)
+* GPIO button handler. Maybe [this](https://github.com/gpiozero/gpiozero)
+* Tests
