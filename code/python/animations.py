@@ -1,3 +1,61 @@
+import datetime
+
+
+class ColorCycler:
+    """
+    Cycles through colors
+    """
+
+    def __init__(self, clock, displayer, increment=10):
+        self.clock = clock
+        self.displayer = displayer
+        self.increment = increment
+        self._color_generator = None
+
+    def iterate_colors(self):
+        for r in range(0, 255, self.increment):
+            for g in range(0, 255, self.increment):
+                for b in range(0, 255, self.increment):
+                    yield (r, g, b)
+
+    def update(self):
+        if self._color_generator is None:
+            self._color_generator = self.iterate_colors()
+
+        try:
+            value = next(self._color_generator)
+        except StopIteration:
+            self._color_generator = self.iterate_colors()
+            value = next(self._color_generator)
+
+        now = datetime.datetime.now()
+        self.displayer.current_color = value
+        self.clock.update(now.hour, now.minute)
+
+
+class Dim:
+    """
+    Dims the brightness
+    """
+    def __init__(self, clock, displayer):
+        self.clock = clock
+        self.displayer = displayer
+
+    def update(self):
+        """
+        Updates the brightness of the display and also force updates the clock so the brightness is used immediately.
+        """
+        current_brightness = self.displayer.bright_percent
+        next_brightness = current_brightness - 2
+        if next_brightness < 0:
+            next_brightness = 100
+
+        now = datetime.datetime.now()
+
+        self.displayer.bright_percent = next_brightness
+        self.clock.update(now.hour, now.minute)
+
+
 class Rainbow:
     """
     Cycles through the rainbow for each word. Adapted from
@@ -22,7 +80,42 @@ class Rainbow:
             pixel_color = self.displayer.wheel(led_index_rounded_wrapped)
             self.displayer.update_position(word.start_idx + i, pixel_color)
 
+    # TODO. Update/remove current step?
     def update(self):
         for word in self.words:
             self._update_word(word)
-        self.current_step += 1
+        self.current_step = (self.current_step + 1) % self.num_steps_per_cycle
+
+
+class TheaterChase:
+    """
+    Runs a 'marquee' effect around the strip. Adapted from
+    https://github.com/tinue/apa102-pi/blob/bcf98eb07576ae1f2fc61634417e2fcccc45ef11/apa102_pi/colorschemes/colorschemes.py#L35
+    """
+
+    def __init__(self, displayer, word, num_steps_per_cycle=2100):
+        self.displayer = displayer
+        self.word = word
+        self.current_step = 0
+        self.num_steps_per_cycle = num_steps_per_cycle
+        self._last_updated = 0
+
+    def update(self):
+        # One cycle = One trip through the color wheel, 0..254
+        # Few cycles = quick transition, lots of cycles = slow transition
+        # Note: For a smooth transition between cycles, numStepsPerCycle must
+        # be a multiple of 7
+        start_index = self.current_step % 7  # One segment is 2 blank, and 5 filled
+        color_index = self.displayer.wheel(
+            int(round(255 / self.num_steps_per_cycle * self.current_step, 0))
+        )
+        num_leds = self.word.end_idx - self.word.start_idx + 1
+        word_start_idx = self.word.start_idx
+        for idx in range(num_leds):
+            # Two LEDs out of 7 are blank. At each step, the blank
+            # ones move one pixel ahead.
+            if ((idx + start_index) % 7 == 0) or ((idx + start_index) % 7 == 1):
+                self.displayer.update_position(word_start_idx + idx, 0)
+            else:
+                self.displayer.update_position(word_start_idx + idx, color_index)
+        self.current_step = (self.current_step + 1) % self.num_steps_per_cycle

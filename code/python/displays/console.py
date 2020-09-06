@@ -9,7 +9,9 @@ class ConsoleDisplay:
     def __init__(self, rows, columns):
         self.rows = rows
         self.columns = columns
+        self.default_color = self.current_color = 'test'
         self.matrix = None
+        self.bright_percent = 100
         self.reset()
 
     def reset(self):
@@ -19,7 +21,6 @@ class ConsoleDisplay:
         self.matrix[position] = value
 
     def batch_update(self, words):
-        self.matrix = ['-' for _ in range(self.rows * self.columns)]
         for word in words:
             for idx in range(word.start_idx, word.end_idx+1):
                 self.update_position(idx, word.display_value[idx - word.start_idx])
@@ -37,4 +38,4 @@ class ConsoleDisplay:
         return random.choice(string.ascii_letters)
 
     def cleanup(self):
-        return
+        self.reset()

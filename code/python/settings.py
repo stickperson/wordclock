@@ -8,7 +8,7 @@ display_cls = ConsoleDisplay
 
 
 birthdays = [
-    Birthday(month=9, day=3)
+    Birthday(month=9, day=5)
 ]
 
 words = {
@@ -48,11 +48,11 @@ words = {
     'TWENTY':   Word(start_idx=20, end_idx=25, display_value='TWENTY'),
     'MFIVE':    Word(start_idx=26, end_idx=29, display_value='FIVE'),
     'MINUTES':  Word(start_idx=31, end_idx=37, display_value='MINUTES'),
-    'HAPPY':    Word(start_idx=6, end_idx=10, display_value='HAPPY'),
+    'HAPPY':    Word(start_idx=39, end_idx=43, display_value='HAPPY'),
     'TO':       Word(start_idx=45, end_idx=46, display_value='TO'),
     'PAST':     Word(start_idx=48, end_idx=51, display_value='PAST'),
     'ONE':      Word(start_idx=52, end_idx=54, display_value='ONE'),
-    'BIRTHDAY': Word(start_idx=12, end_idx=19, display_value='BIRTHDAY'),
+    'BIRTHDAY': Word(start_idx=56, end_idx=63, display_value='BIRTHDAY'),
     'ELEVEN':   Word(start_idx=65, end_idx=70, display_value='ELEVEN'),
     'THREE':    Word(start_idx=72, end_idx=76, display_value='THREE'),
     'SIX':      Word(start_idx=78, end_idx=80, display_value='SIX'),
@@ -65,4 +65,5 @@ words = {
     'HTEN':     Word(start_idx=112, end_idx=114, display_value='TEN'),
     'TWELVE':   Word(start_idx=117, end_idx=122, display_value='TWELVE'),
     'OCLOCK':   Word(start_idx=124, end_idx=129, display_value='OCLOCK'),
+    'ALL':      Word(start_idx=0, end_idx=129)
 }
