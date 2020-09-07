@@ -1,28 +1,36 @@
 import keyboard
+import datetime
+import settings
 
 
 class KeyboardButtonManager:
-    def __init__(self, pin, animations, on_reset=None, *args, **kwargs):
+    def __init__(self, pin, states=0, on_reset=None, *args, **kwargs):
         self.pin = pin
-        self.animations = animations
+        self.states = states
         self.on_reset = on_reset
-        self.animation_idx = -1
+
+        self.current_state = 0
+        self.last_updated = datetime.datetime.now()
         keyboard.on_press_key(pin, self.on_press_key)
 
     def on_press_key(self, *args, **kwargs):
-        if self.animation_idx == (len(self.animations) - 1):
-            self.animation_idx = -1
+        self.current_state += 1
+        if self.current_state > self.states:
+            self.current_state = 0
             if self.on_reset:
                 self.on_reset()
-            return
 
-        self.animation_idx = (self.animation_idx + 1) % len(self.animations)
 
     def tick(self, *args, **kwargs):
-        if self.is_active:
-            transition = self.animations[self.animation_idx]
-            transition.update()
+        # This is a hack because keyboard events are not captured over SSH.
+        # See https://github.com/boppreh/keyboard/issues/195
+        if getattr(settings, 'SIMULATE_KEYPRESS', False):
+            now = datetime.datetime.now()
+            if (now - self.last_updated).seconds >= 3:
+                print('tick')
+                self.last_updated = now
+                self.on_press_key()
 
     @property
     def is_active(self):
-        return self.animation_idx > -1
+        return bool(self.current_state)

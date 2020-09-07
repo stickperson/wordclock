@@ -6,7 +6,7 @@ class ColorCycler:
     Cycles through colors
     """
 
-    def __init__(self, clock, displayer, increment=10):
+    def __init__(self, clock, displayer, increment=50):
         self.clock = clock
         self.displayer = displayer
         self.increment = increment
@@ -46,7 +46,7 @@ class Dim:
         Updates the brightness of the display and also force updates the clock so the brightness is used immediately.
         """
         current_brightness = self.displayer.bright_percent
-        next_brightness = current_brightness - 2
+        next_brightness = current_brightness - 0.1
         if next_brightness < 0:
             next_brightness = 100
 

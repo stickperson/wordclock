@@ -62,7 +62,7 @@ class Clock:
             4: 'FOUR',
             5: 'HFIVE',
             6: 'SIX',
-            7: 'SEVEB',
+            7: 'SEVEN',
             8: 'EIGHT',
             9: 'NINE',
             10: 'HTEN',

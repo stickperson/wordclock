@@ -28,7 +28,7 @@ class APA102Display:
         self.current_color = self.default_color
 
     def update_position(self, position, color=None):
-        color = color or self.default_color
+        color = color or self.current_color
         if isinstance(color, tuple):
             color = self.rgb_to_hex(color)
         self.strip.set_pixel_rgb(position, color, self.bright_percent)
