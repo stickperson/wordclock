@@ -1,3 +1,4 @@
+import colorsys
 import datetime
 
 
@@ -6,17 +7,15 @@ class ColorCycler:
     Cycles through colors
     """
 
-    def __init__(self, clock, displayer, increment=50):
+    def __init__(self, clock, displayer):
         self.clock = clock
         self.displayer = displayer
-        self.increment = increment
         self._color_generator = None
 
     def iterate_colors(self):
-        for r in range(0, 255, self.increment):
-            for g in range(0, 255, self.increment):
-                for b in range(0, 255, self.increment):
-                    yield (r, g, b)
+        for h in range(0, 361):
+            r, g, b = colorsys.hsv_to_rgb(h / 360, 1, 1)
+            yield (r * 255, g * 255, b * 255)
 
     def update(self):
         if self._color_generator is None:
@@ -45,14 +44,14 @@ class Dim:
         """
         Updates the brightness of the display and also force updates the clock so the brightness is used immediately.
         """
-        current_brightness = self.displayer.bright_percent
-        next_brightness = current_brightness - 0.1
+        current_brightness = self.displayer.current_brightness
+        next_brightness = current_brightness - 1
         if next_brightness < 0:
-            next_brightness = 100
+            next_brightness = self.displayer.max_brightness
 
         now = datetime.datetime.now()
 
-        self.displayer.bright_percent = next_brightness
+        self.displayer.current_brightness = next_brightness
         self.clock.update(now.hour, now.minute)
 
 

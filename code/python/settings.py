@@ -1,9 +1,9 @@
-from displays.apa102 import APA102Display
+from displays.dotstar import DotstarDisplay
 # from displays.console import ConsoleDisplay
 from models import Birthday, Word
 
 
-display_cls = APA102Display
+display_cls = DotstarDisplay
 # display_cls = ConsoleDisplay
 
 

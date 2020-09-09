@@ -6,12 +6,12 @@ class ConsoleDisplay:
     """
     Display class which prints to the console for debugging purposes
     """
-    def __init__(self, rows, columns):
+    def __init__(self, rows, columns, *args, **kwargs):
         self.rows = rows
         self.columns = columns
         self.default_color = self.current_color = 'test'
         self.matrix = None
-        self.bright_percent = 100
+        self.max_brightness = self.current_brightness = 100
         self.reset()
 
     def reset(self):

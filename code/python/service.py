@@ -28,10 +28,6 @@ def update_clock(now, clock, buttons, **kwargs):
     clock.update(now.hour, now.minute)
 
 
-def update_display(now, displayer, **kwargs):
-    displayer.display()
-
-
 def reset_display_and_clock(clock, displayer, **kwargs):
     displayer.reset()
     now = datetime.datetime.now()
@@ -47,7 +43,7 @@ def run_animation(animation, animations, button_manager, **kwargs):
 
 if __name__ == '__main__':
     # Setup clock and display
-    displayer = display_cls(rows=10, columns=13)
+    displayer = display_cls(rows=10, columns=13, max_brightness=25)
     clock = Clock(displayer=displayer, color=None, words=words)
 
     # Update the clock immediately
@@ -62,32 +58,31 @@ if __name__ == '__main__':
     dim = Dim(clock, displayer)
     button_rainbow = Rainbow(displayer, words=[words['ALL']])
     button_chase = TheaterChase(displayer, words['ALL'])
-    btn = KeyboardButtonManager('q', 4, on_reset=partial(reset_display_and_clock, clock, displayer))
-    buttons = [btn]
     button_animations = [color_cycler, dim, button_rainbow, button_chase]
-
+    btn = KeyboardButtonManager(
+        'q', states=len(button_animations), on_reset=partial(reset_display_and_clock, clock, displayer)
+    )
+    buttons = [btn]
 
     # All timers. Unsure if timers should be used or if each class should just handle this
     birthday_timer = Timer(50, display_birthday, animation=birthday_animation, birthdays=birthdays, buttons=buttons)
     clock_timer = Timer(60000, update_clock, clock=clock, buttons=[btn])  # update every minute
     color_timer = Timer(100, run_animation, animation=color_cycler, animations=button_animations, button_manager=btn)
-    dim_timer = Timer(1, run_animation, animation=dim, animations=button_animations, button_manager=btn)
+    dim_timer = Timer(50, run_animation, animation=dim, animations=button_animations, button_manager=btn)
     rainbow_timer = Timer(50, run_animation, animation=button_rainbow, animations=button_animations, button_manager=btn)
     chase_timer = Timer(50, run_animation, animation=button_chase, animations=button_animations, button_manager=btn)
     # rainbow_timer = Timer(100, run_rainbow, clock=clock, buttons=[btn])  # update every minute
-    # Might not need this. Or it might not place nice with animations. Could maybe be moved into the display class
-    display_timer = Timer(1, update_display, displayer=displayer)
 
     while True:
         try:
             birthday_timer.tick()
             btn.tick()
             clock_timer.tick()
-            display_timer.tick()
             color_timer.tick()
             dim_timer.tick()
             rainbow_timer.tick()
             chase_timer.tick()
+            displayer.display()
         except KeyboardInterrupt:
             displayer.cleanup()
             sys.exit(0)
