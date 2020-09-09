@@ -18,6 +18,8 @@ class DotstarDisplay:
         self.reset()
         self.pixels.deinit()
 
+    # TODO. Could potentially only update if needed, but that may be difficult to implement. Unsure what the drawbacks
+    # to calling this so often are.
     def display(self):
         self.pixels.show()
 
