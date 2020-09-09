@@ -13,6 +13,14 @@ class ColorCycler:
         self._color_generator = None
 
     def iterate_colors(self):
+        """
+        Iterates through colors by converting HSV to RGB.
+
+        The colorsys library expects values in the 0 to 1 range. The hue in HSV is on the range of
+        0..360, hence the conversion. Saturaton and value are kept at max to simplify this.
+
+        HSV is easier to reason about (see https://learn.adafruit.com/adafruit-dotstar-leds/arduino-library-use#hsv-hue-saturation-value-colors-dot-dot-dot-3024517-38)
+        """
         for h in range(0, 361):
             r, g, b = colorsys.hsv_to_rgb(h / 360, 1, 1)
             yield (r * 255, g * 255, b * 255)
