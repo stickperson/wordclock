@@ -1,128 +1,124 @@
 import colorsys
 import datetime
 
+from adafruit_led_animation.animation import Animation
+from adafruit_led_animation.animation.pulse import Pulse as AdafruitPulse
+from adafruit_led_animation.group import AnimationGroup
+from adafruit_led_animation.helper import PixelSubset
+from adafruit_led_animation.animation.rainbowcomet import RainbowComet as AdafruitRainbowComet
 
-class ColorCycler:
-    """
-    Cycles through colors
-    """
 
-    def __init__(self, clock, displayer):
+class Pulse(AdafruitPulse):
+    """
+    Adafruit's Pulse animation with brightness added
+    """
+    def __init__(self, clock, displayer, *args, words=None, **kwargs):
+        super().__init__(color=displayer.current_color, *args, **kwargs)
         self.clock = clock
         self.displayer = displayer
-        self._color_generator = None
+        self.words = words
 
-    def iterate_colors(self):
+        self.change_color(self.displayer.current_color)
+
+    def draw(self):
+        color = next(self._generator)
+        self.displayer.current_color = color[:3]
+        scaled_brightness = color[3] * self.displayer.max_brightness
+        self.displayer.current_brightness = scaled_brightness
+
+        if self.words:
+            self.displayer.batch_update(self.words)
+        else:
+            now = datetime.datetime.now()
+            self.clock.update()
+
+    def change_color(self, color):
+        self.color = color
+        self.reset()
+
+
+class ColorCycler(Animation):
+    """
+    Very similar to Adafruit's ColorCycle except with a different color generator function
+    """
+    def __init__(self, clock, displayer, *args, words=None, **kwargs):
+        super().__init__(color=displayer.current_color, *args, **kwargs)
+        self.clock = clock
+        self.displayer = displayer
+        self.words = words
+        self._generator = self._color_generator()
+        next(self._generator)
+
+    # TODO. Investiage whether FancyLED's HSV would be better
+    def _color_generator(self):
         """
-        Iterates through colors by converting HSV to RGB.
-
-        The colorsys library expects values in the 0 to 1 range. The hue in HSV is on the range of
-        0..360, hence the conversion. Saturaton and value are kept at max to simplify this.
-
-        HSV is easier to reason about (see https://learn.adafruit.com/adafruit-dotstar-leds/arduino-library-use#hsv-hue-saturation-value-colors-dot-dot-dot-3024517-38)
+        Use HSV values to generate colors for a smoother animation
         """
         for h in range(0, 361):
             r, g, b = colorsys.hsv_to_rgb(h / 360, 1, 1)
-            yield (r * 255, g * 255, b * 255)
+            self._color = (r * 255, g * 255, b * 255)
+            yield
+        self.cycle_complete = True
 
-    def update(self):
-        if self._color_generator is None:
-            self._color_generator = self.iterate_colors()
-
-        try:
-            value = next(self._color_generator)
-        except StopIteration:
-            self._color_generator = self.iterate_colors()
-            value = next(self._color_generator)
-
-        now = datetime.datetime.now()
-        self.displayer.current_color = value
-        self.clock.update(now.hour, now.minute)
+    def draw(self):
+        self.displayer.current_color = self.color
+        if self.words:
+            self.displayer.batch_update(self.words)
+        else:
+            now = datetime.datetime.now()
+            self.clock.update()
+        next(self._generator)
 
 
-class Dim:
+class RainbowComet(AdafruitRainbowComet):
     """
-    Dims the brightness
+    Extend's Adafruit's "RainbowComet" to update the brightness instead of color alone
     """
-    def __init__(self, clock, displayer):
-        self.clock = clock
+    def __init__(self, displayer, *args, word=None, **kwargs):
+        super().__init__(*args, **kwargs)
         self.displayer = displayer
 
-    def update(self):
+    def draw(self):
         """
-        Updates the brightness of the display and also force updates the clock so the brightness is used immediately.
+        Same exact implementation as the base class except adding in current brightness
         """
-        current_brightness = self.displayer.current_brightness
-        next_brightness = current_brightness - 1
-        if next_brightness < 0:
-            next_brightness = self.displayer.max_brightness
+        colors = self._comet_colors
+        if self.reverse:
+            colors = reversed(colors)
+        for pixel_no, color in enumerate(colors):
+            if len(color) == 3:
+                color = list(color)
+                color.append(self.displayer.current_brightness / 100)
 
-        now = datetime.datetime.now()
+            draw_at = self._tail_start + pixel_no
+            if draw_at < 0 or draw_at >= self._num_pixels:
+                if not self._ring:
+                    continue
+                draw_at = draw_at % self._num_pixels
 
-        self.displayer.current_brightness = next_brightness
-        self.clock.update(now.hour, now.minute)
+            self.pixel_object[draw_at] = color
 
+        self._tail_start += self._direction
 
-class Rainbow:
-    """
-    Cycles through the rainbow for each word. Adapted from
-    https://github.com/tinue/apa102-pi/blob/bcf98eb07576ae1f2fc61634417e2fcccc45ef11/apa102_pi/colorschemes/colorschemes.py#L88
-    """
-    def __init__(self, displayer, words, num_steps_per_cycle=20):
-        self.displayer = displayer
-        self.words = words
-        self.current_step = 0
-        self.num_steps_per_cycle = num_steps_per_cycle
-
-    def _update_word(self, word):
-        num_leds = word.end_idx - word.start_idx + 1
-        scale_factor = 255 / num_leds  # Index change between two neighboring LEDs
-        start_index = 255 / self.num_steps_per_cycle * self.current_step  # LED 0
-        for i in range(num_leds):
-            # Index of LED i, not rounded and not wrapped at 255
-            led_index = start_index + i * scale_factor
-            # Now rounded and wrapped
-            led_index_rounded_wrapped = int(round(led_index, 0)) % 255
-            # Get the actual color out of the wheel
-            pixel_color = self.displayer.wheel(led_index_rounded_wrapped)
-            self.displayer.update_position(word.start_idx + i, pixel_color)
-
-    # TODO. Update/remove current step?
-    def update(self):
-        for word in self.words:
-            self._update_word(word)
-        self.current_step = (self.current_step + 1) % self.num_steps_per_cycle
-
-
-class TheaterChase:
-    """
-    Runs a 'marquee' effect around the strip. Adapted from
-    https://github.com/tinue/apa102-pi/blob/bcf98eb07576ae1f2fc61634417e2fcccc45ef11/apa102_pi/colorschemes/colorschemes.py#L35
-    """
-
-    def __init__(self, displayer, word, num_steps_per_cycle=2100):
-        self.displayer = displayer
-        self.word = word
-        self.current_step = 0
-        self.num_steps_per_cycle = num_steps_per_cycle
-        self._last_updated = 0
-
-    def update(self):
-        # One cycle = One trip through the color wheel, 0..254
-        # Few cycles = quick transition, lots of cycles = slow transition
-        # Note: For a smooth transition between cycles, numStepsPerCycle must
-        # be a multiple of 7
-        start_index = self.current_step % 7  # One segment is 2 blank, and 5 filled
-        color_index = self.displayer.wheel(
-            int(round(255 / self.num_steps_per_cycle * self.current_step, 0))
-        )
-        num_leds = self.word.end_idx - self.word.start_idx + 1
-        word_start_idx = self.word.start_idx
-        for idx in range(num_leds):
-            # Two LEDs out of 7 are blank. At each step, the blank
-            # ones move one pixel ahead.
-            if ((idx + start_index) % 7 == 0) or ((idx + start_index) % 7 == 1):
-                self.displayer.update_position(word_start_idx + idx, 0)
+        if self._tail_start < self._left_side or self._tail_start >= self._right_side:
+            if self.bounce:
+                self.reverse = not self.reverse
+                self._direction = -self._direction
+            elif self._ring:
+                self._tail_start = self._tail_start % self._num_pixels
             else:
-                self.displayer.update_position(word_start_idx + idx, color_index)
-        self.current_step = (self.current_step + 1) % self.num_steps_per_cycle
+                self.reset()
+            if self.reverse == self._initial_reverse and self.draw_count > 0:
+                self.cycle_complete = True
+
+
+class RainbowGroup(AnimationGroup):
+    # TODO. Stop hardcoding tail length
+    def __init__(self, displayer, pixels, *args, sync=False, words=None, **kwargs):
+        self.displayer = displayer
+        members = []
+        for word in words:
+            subset = PixelSubset(pixels, word.start_idx, word.end_idx)
+            member = RainbowComet(displayer, subset, speed=0.1, tail_length=(word.end_idx - word.start_idx + 1) * 2)
+            members.append(member)
+        super().__init__(*members, sync=sync)

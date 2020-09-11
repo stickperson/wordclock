@@ -14,14 +14,22 @@ class Timer:
         self.delay = delay
         self.fn = fn
         self.kwargs = kwargs
-        self.last_updated = datetime.datetime.now()
+        self._last_updated = None
+        self._completed_initial = False
 
     def tick(self):
+        should_update = False
         now = datetime.datetime.now()
-        diff = now - self.last_updated
-        milliseconds = diff.total_seconds() * 1000
-        if milliseconds >= self.delay:
-            self.fn(now=now, **self.kwargs)
+        if not self._completed_initial:
+            should_update = True
+            self._completed_initial = True
+        else:
+            diff = now - self.last_updated
+            milliseconds = diff.total_seconds() * 1000
+            if milliseconds >= self.delay:
+                should_update = True
+        if should_update:
+            self.fn(**self.kwargs)
             self.last_updated = datetime.datetime.now()
 
 
@@ -46,10 +54,26 @@ class Word:
 
 
 class Clock:
-    def __init__(self, displayer, color, words):
+    def __init__(self, displayer, color, words, birthdays):
         self.displayer = displayer
         self.color = color
         self.words = words
+        self.birthdays = birthdays
+
+        self._is_birthday = False
+
+    @property
+    def is_birthday(self):
+        return self._is_birthday
+
+    def check_birthday(self):
+        now = datetime.datetime.now()
+        month = now.month
+        day = now.day
+        for birthday in self.birthdays:
+            if birthday.month == month and birthday.day == day:
+                self._is_birthday = True
+                return
 
     # TODO. Break into smaller functions.
     def _determine_words(self, hour, minute):
@@ -114,8 +138,9 @@ class Clock:
         words = [self.words[k] for k in word_keys]
         return words
 
-    def update(self, hour, minute):
-        words = self._determine_words(hour, minute)
+    def update(self, *args, **kwargs):
+        now = datetime.datetime.now()
+        words = self._determine_words(now.hour, now.minute)
         to_display = []
         for word in words:
             word.color = word.color or self.color

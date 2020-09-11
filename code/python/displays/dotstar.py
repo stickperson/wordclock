@@ -12,7 +12,7 @@ class DotstarDisplay:
     def batch_update(self, words):
         for word in words:
             for idx in range(word.start_idx, word.end_idx+1):
-                self.update_position(idx)
+                self.update_position(idx, color=word.color)
 
     def cleanup(self):
         self.reset()
