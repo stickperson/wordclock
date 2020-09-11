@@ -29,7 +29,6 @@ if __name__ == '__main__':
 
     # These two animations should continue even after the button is released. This might be a hack but it doesn't
     # really make sense for the animation itself to care.
-    # button_rainbow.continue_after_button_pressed = True
     # button_chase.continue_after_button_pressed = True
 
     # button_animations = [color_cycler, dim, button_rainbow, button_chase]
@@ -45,6 +44,7 @@ if __name__ == '__main__':
     timers = [check_birthday_timer, update_clock_timer]
 
     while True:
+        cleanup = False
         try:
             # Don't forget to call tick() for all timers
             for timer in timers:
@@ -53,9 +53,13 @@ if __name__ == '__main__':
             if clock.is_birthday:
                 birthday_animation_group.animate()
 
+            # Check the state of the button
             current_state = button.current_state
             if current_state:
                 button_animation = button_animations[button.current_state - 1]
+                # Some animations will only be run if the button is currently pressed down. If it should be run after
+                # release until the button is pressed, add `continue_after_button_pressed = True` to the animation
+                # instance
                 if button.is_pressed or getattr(button_animation, 'continue_after_button_pressed', False):
                     button_animation.animate()
 
@@ -66,9 +70,9 @@ if __name__ == '__main__':
             # Hack to get the MockButtonHandler working.
             if hasattr(button, 'handle_interrupt'):
                 cleanup = button.handle_interrupt()
-            if cleanup:
-                displayer.cleanup()
-                sys.exit(0)
-        except StopIteration:
+        except Exception:  # cleanup if any uncaught exception is raised
+            cleanup = True
+
+        if cleanup:
             displayer.cleanup()
             sys.exit(0)

@@ -1,5 +1,4 @@
 import colorsys
-import datetime
 
 from adafruit_led_animation.animation import Animation
 from adafruit_led_animation.animation.pulse import Pulse as AdafruitPulse
@@ -29,7 +28,6 @@ class Pulse(AdafruitPulse):
         if self.words:
             self.displayer.batch_update(self.words)
         else:
-            now = datetime.datetime.now()
             self.clock.update()
 
     def change_color(self, color):
@@ -65,11 +63,11 @@ class ColorCycler(Animation):
         if self.words:
             self.displayer.batch_update(self.words)
         else:
-            now = datetime.datetime.now()
             self.clock.update()
         next(self._generator)
 
 
+# TODO. Think about implementing some sort of gradient so that there are no black pixels (the tail of the comet)
 class RainbowComet(AdafruitRainbowComet):
     """
     Extend's Adafruit's "RainbowComet" to update the brightness instead of color alone
