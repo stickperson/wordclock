@@ -45,6 +45,7 @@ if __name__ == '__main__':
 
     while True:
         cleanup = False
+        exception = None
         try:
             # Don't forget to call tick() for all timers
             for timer in timers:
@@ -70,9 +71,12 @@ if __name__ == '__main__':
             # Hack to get the MockButtonHandler working.
             if hasattr(button, 'handle_interrupt'):
                 cleanup = button.handle_interrupt()
-        except Exception:  # cleanup if any uncaught exception is raised
+        except Exception as e:  # cleanup if any uncaught exception is raised
             cleanup = True
+            exception = e
 
         if cleanup:
             displayer.cleanup()
+            if exception:
+                raise exception
             sys.exit(0)
