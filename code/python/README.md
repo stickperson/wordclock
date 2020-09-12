@@ -19,8 +19,6 @@ Once this is setup, you can run `python service.py`
 
 ## TODO
 * ABC for displays?
-* Potentially use [Adafruit's dotstar library](https://github.com/adafruit/Adafruit_CircuitPython_DotStar) instead.
-* Think about overall structure-- does `models.py` still make sense? Where should animations and button stuff live?
-* Think about where the birthday logic should live
+* Think about overall structure-- does `models.py` still make sense?
 * GPIO button handler. Maybe [this](https://github.com/gpiozero/gpiozero)
 * Tests
