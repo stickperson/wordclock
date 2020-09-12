@@ -1,7 +1,7 @@
 from functools import partial
 import sys
 
-from animations import ColorCycler, Pulse, RainbowGroup
+from animations import ColorCycle, Pulse, RainbowCometGroup
 from models import Clock, Timer
 from settings import birthdays, display_cls, words
 from button_managers import MockButtonHandler
@@ -22,8 +22,8 @@ if __name__ == '__main__':
 
     # Define animations. These will be cycled through when clicking the button.
     pulse = Pulse(clock, displayer, displayer.pixels, speed=0.05, period=3)
-    color_cycle = ColorCycler(clock, displayer, displayer.pixels, speed=0.05)
-    birthday_animation_group = RainbowGroup(
+    color_cycle = ColorCycle(clock, displayer, displayer.pixels, speed=0.05)
+    birthday_animation_group = RainbowCometGroup(
         displayer, displayer.pixels, speed=0.05, words=[words['HAPPY'], words['BIRTHDAY']]
     )
 

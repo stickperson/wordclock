@@ -5,7 +5,7 @@ import datetime
 class Timer:
     """
     A simple class that calls a function after a certain amount of time (in milliseconds) has
-    passed. Perhaps threading.Timer would be better.
+    passed. Perhaps threading.Timer would be better but this certainly works.
 
     delay: time in ms
     fn: function to be run
