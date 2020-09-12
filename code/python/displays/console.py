@@ -4,7 +4,9 @@ import string
 
 class ConsoleDisplay:
     """
-    Display class which prints to the console for debugging purposes
+    Display class which prints to the console for debugging purposes.
+
+    Note: this does NOT work with animations.
     """
     def __init__(self, rows, columns, *args, **kwargs):
         self.rows = rows
