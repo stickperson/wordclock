@@ -10,10 +10,10 @@ I've made this clock two times. Trying a third time with a raspberry pi. Here ar
 
 # Contents
 * [Materials](#materials)
-    * [Frame Construction](##frame-construction)
-        * [Parts](###parts)
-        * [Laser Cutter](###laser-cutter)
-    * [Electronics](##electronics)
+    * [Frame Construction](#frame-construction)
+        * [Parts](#parts)
+        * [Laser Cutter](#laser-cutter)
+    * [Electronics](#electronics)
 * [Software](#software)
     * [Arduino](#arduino)
     * [Python](#python)
@@ -21,7 +21,7 @@ I've made this clock two times. Trying a third time with a raspberry pi. Here ar
 
 
 # Materials
-## Frame
+## Frame Construction
 ### Parts
 * 12" x 12" 1/8" plywood (x3) for the face, back, and grid.
 * 12" x 12" acrylic (need to figure out how opaque). Make sure you get acrylic and not the toxic stuff. These pieces will sit in the grid which 1) prevents light from leaking out and 2) diffuses the light across the entire letter.
