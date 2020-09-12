@@ -15,7 +15,7 @@ def reset_display_and_clock(clock, displayer, **kwargs):
 if __name__ == '__main__':
     # Setup clock and display
     displayer = display_cls(rows=10, columns=13, max_brightness=25)
-    clock = Clock(displayer=displayer, color=None, words=words, birthdays=birthdays)
+    clock = Clock(displayer=displayer, words=words, birthdays=birthdays)
 
     # Update the clock immediately
     clock.update()

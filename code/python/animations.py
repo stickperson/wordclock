@@ -25,6 +25,9 @@ class Pulse(AdafruitPulse):
         scaled_brightness = color[3] * self.displayer.max_brightness
         self.displayer.current_brightness = scaled_brightness
 
+        # If we passed in certain words only those will be updated. Otherwise, update the clock so that the brightness
+        # is refreshed. This is the only way the brightness can be changed (updating the brightness on the display
+        # itself will not do anything, and simply refreshing the display will not)
         if self.words:
             self.displayer.batch_update(self.words)
         else:
@@ -47,7 +50,6 @@ class ColorCycler(Animation):
         self._generator = self._color_generator()
         next(self._generator)
 
-    # TODO. Investiage whether FancyLED's HSV would be better
     def _color_generator(self):
         """
         Use HSV values to generate colors for a smoother animation
@@ -111,7 +113,7 @@ class RainbowComet(AdafruitRainbowComet):
 
 
 class RainbowGroup(AnimationGroup):
-    # TODO. Stop hardcoding tail length
+    # TODO. Figure out what a good tail length would be
     def __init__(self, displayer, pixels, *args, sync=False, words=None, **kwargs):
         self.displayer = displayer
         members = []

@@ -50,16 +50,13 @@ class Word:
     start_idx: int
     end_idx: int
     display_value: str = ''
-    color: str = ''
 
 
 class Clock:
-    def __init__(self, displayer, color, words, birthdays):
+    def __init__(self, displayer, words, birthdays=None):
         self.displayer = displayer
-        self.color = color
         self.words = words
-        self.birthdays = birthdays
-
+        self.birthdays = birthdays or []
         self._is_birthday = False
 
     @property
@@ -141,8 +138,4 @@ class Clock:
     def update(self, *args, **kwargs):
         now = datetime.datetime.now()
         words = self._determine_words(now.hour, now.minute)
-        to_display = []
-        for word in words:
-            word.color = word.color or self.color
-            to_display.append(word)
-        self.displayer.batch_update(to_display)
+        self.displayer.batch_update(words)

@@ -10,26 +10,41 @@ class DotstarDisplay:
         self.reset()
 
     def batch_update(self, words):
+        """
+        Helper function to update multiple words at once
+        """
         for word in words:
             for idx in range(word.start_idx, word.end_idx + 1):
-                self.update_position(idx, color=word.color)
+                self.update_position(idx)
 
     def cleanup(self):
+        """
+        Should only be called when we are finished
+        """
         self.reset()
         self.pixels.deinit()
 
     # TODO. Could potentially only update if needed, but that may be difficult to implement. Unsure what the drawbacks
     # to calling this so often are.
     def display(self):
+        """
+        Actually displays the leds
+        """
         self.pixels.show()
 
     def reset(self):
+        """
+        Makes all pixels black, resets brightness and color to what the class was initiated with
+        """
         self.pixels.fill((0, 0, 0))
         self.brightness = self.max_brightness
         self.current_color = self.default_color
         self.display()
 
     def update_position(self, position, color=None):
+        """
+        Updates an individual led. Uses the current color of the display if no color is supplied.
+        """
         color = color or self.current_color
         if isinstance(color, tuple):
             color = list(color)
