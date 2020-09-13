@@ -5,7 +5,7 @@ import sys
 from animations import ColorCycle, Pulse, RainbowCometGroup
 from models import Clock, Timer
 from settings import birthdays, display_cls, words
-from button_managers import ButtonStateManager, MockButton
+from buttons import ButtonStateManager, MockButton
 
 
 def reset_display_and_clock(clock, displayer, **kwargs):
@@ -63,13 +63,13 @@ if __name__ == '__main__':
                 birthday_animation_group.animate()
 
             # Check the state of the button
-            current_state = button_manager.current_state
+            current_state = button.current_state
             if current_state:
-                button_animation = button_animations[button_manager.current_state - 1]
+                button_animation = button_animations[current_state - 1]
                 # Some animations will only be run if the button is currently pressed down. If it should be run after
                 # release until the button is pressed, add `continue_after_button_pressed = True` to the animation
                 # instance
-                if button_manager.is_pressed or getattr(button_animation, 'continue_after_button_pressed', False):
+                if button.is_held or getattr(button_animation, 'continue_after_button_pressed', False):
                     button_animation.animate()
 
             # And refresh the display
