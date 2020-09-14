@@ -2,7 +2,7 @@ from functools import partial
 import signal
 import sys
 
-from animations import ColorCycle, Pulse, RainbowCometGroup
+from animations import ColorCycle, Pulse, Rainbow
 from models import Clock, Timer
 from settings import birthdays, display_cls, words
 from buttons import ButtonStateManager, MockButton
@@ -30,8 +30,9 @@ if __name__ == '__main__':
     # Define animations. These will be cycled through when clicking the button_manager.
     pulse = Pulse(clock, displayer, displayer.pixels, speed=0.05, period=3)
     color_cycle = ColorCycle(clock, displayer, displayer.pixels, speed=0.05)
-    birthday_animation_group = RainbowCometGroup(
-        displayer, displayer.pixels, speed=0.05, words=[words['HAPPY'], words['BIRTHDAY']]
+
+    birthday_animation = Rainbow(
+        displayer, displayer.pixels, speed=.1, words=[words['HAPPY'], words['BIRTHDAY']]
     )
 
     # These two animations should continue even after the button is released. This might be a hack but it doesn't
@@ -60,7 +61,7 @@ if __name__ == '__main__':
                 timer.tick()
 
             if clock.is_birthday:
-                birthday_animation_group.animate()
+                birthday_animation.animate()
 
             # Check the state of the button
             current_state = button.current_state
