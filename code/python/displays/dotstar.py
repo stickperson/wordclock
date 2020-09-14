@@ -37,7 +37,7 @@ class DotstarDisplay:
         Makes all pixels black, resets brightness and color to what the class was initiated with
         """
         self.pixels.fill((0, 0, 0))
-        self.brightness = self.max_brightness
+        self.current_brightness = self.max_brightness
         self.current_color = self.default_color
         self.display()
 
