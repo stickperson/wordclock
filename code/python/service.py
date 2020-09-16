@@ -1,4 +1,3 @@
-from functools import partial
 import signal
 import sys
 
@@ -8,80 +7,98 @@ from settings import birthdays, display_cls, words
 from buttons import ButtonStateManager, MockButton
 
 
-def reset_display_and_clock(clock, displayer, **kwargs):
-    displayer.reset()
-    clock.update()
+class WordClock:
+    def __init__(self):
+        self.displayer = display_cls(rows=10, columns=13, max_brightness=25)
+        self.clock = Clock(displayer=self.displayer, words=words, birthdays=birthdays)
+        self.birthday_animation = Rainbow(
+            self.displayer, self.displayer.pixels, speed=.1, words=[words['HAPPY'], words['BIRTHDAY']]
+        )
 
+        self.button_animations = []
+        self.button = None
+        self.timers = []
 
-def cleanup(displayer, *args, **kwargs):
-    displayer.cleanup()
-    sys.exit(0)
+        self._startup()
+
+    def cleanup(self, *args, exit=True, **kwargs):
+        """
+        Cleanup the display (turns off LEDs etc) and exits the program by default
+        """
+        self.displayer.cleanup()
+        if exit:
+            sys.exit(0)
+
+    def _startup(self):
+        """
+        Immediately fetch the time and setup button/timers
+        """
+        self.clock.update()
+        self._setup_button_handlers()
+        self._setup_timers()
+
+    def reset_display_and_clock(self):
+        """
+        Resets the display to default values and updates the clock. If showing the time is moved to a "animation"
+        or "plugin" then self.clock.update could be removed.
+        """
+        self.displayer.reset()
+        self.clock.update()
+
+    # TODO. Stop hardcoding this. Possible put it into some sort of configuration file.
+    def _setup_button_handlers(self):
+        pulse = Pulse(self.clock, self.displayer, self.displayer.pixels, speed=0.05, period=3)
+        pulse.run_alone = False
+        color_cycle = ColorCycle(self.clock, self.displayer, self.displayer.pixels, speed=0.05)
+
+        self.button_animations = [pulse, color_cycle]
+        button_manager = ButtonStateManager(
+            len(self.button_animations), on_reset=self.reset_display_and_clock
+        )
+        self.button = MockButton(4, button_manager, hold_time=0.5)
+
+    def _setup_timers(self):
+        check_birthday_timer = Timer(60000, self.clock.check_birthday)  # update every minute
+        update_clock_timer = Timer(60000, self.clock.update)  # update every minute
+
+        self.timers = [check_birthday_timer, update_clock_timer]
+
+    # TODO. Figure out how to turn off displaying the birthday animation if another animation should overwrite it.
+    def tick(self):
+        """
+        Runs timers, checks if the birthday message should be displayed, and runs any animations
+        """
+        for timer in self.timers:
+            timer.tick()
+
+        if self.clock.is_birthday and self.birthday_animation:
+            self.birthday_animation.animate()
+
+        # Check the state of the button
+        current_state = self.button.current_state
+        if current_state:
+            button_animation = self.button_animations[current_state - 1]
+            # Some animations will only be run if the button is currently pressed down. If it should be run after
+            # release until the button is pressed, add `continue_after_button_pressed = True` to the animation
+            # instance
+            if self.button.is_held or getattr(button_animation, 'continue_after_button_pressed', False):
+                button_animation.animate()
+
+        # And refresh the display
+        self.displayer.display()
 
 
 if __name__ == '__main__':
     # Setup clock and display
-    displayer = display_cls(rows=10, columns=13, max_brightness=25)
-    clock = Clock(displayer=displayer, words=words, birthdays=birthdays)
-    signal.signal(signal.SIGTERM, partial(cleanup, displayer))
-
-    # Update the clock immediately
-    clock.update()
-
-    # Define animations. These will be cycled through when clicking the button_manager.
-    pulse = Pulse(clock, displayer, displayer.pixels, speed=0.05, period=3)
-    color_cycle = ColorCycle(clock, displayer, displayer.pixels, speed=0.05)
-
-    birthday_animation = Rainbow(
-        displayer, displayer.pixels, speed=.1, words=[words['HAPPY'], words['BIRTHDAY']]
-    )
-
-    # These two animations should continue even after the button is released. This might be a hack but it doesn't
-    # really make sense for the animation itself to care.
-    # button_chase.continue_after_button_pressed = True
-
-    # button_animations = [color_cycler, dim, button_rainbow, button_chase]
-    button_animations = [pulse, color_cycle]
-    button_manager = ButtonStateManager(
-        len(button_animations), on_reset=partial(reset_display_and_clock, clock, displayer)
-    )
-    button = MockButton(4, button_manager, hold_time=0.5)
-
-    # All timers.
-    check_birthday_timer = Timer(60000, clock.check_birthday)  # update every minute
-    update_clock_timer = Timer(60000, clock.update)  # update every minute
-
-    timers = [check_birthday_timer, update_clock_timer]
+    wordclock = WordClock()
+    signal.signal(signal.SIGTERM, wordclock.cleanup)
 
     while True:
         cleanup = False
         exception = None
         try:
-            # Don't forget to call tick() for all timers
-            for timer in timers:
-                timer.tick()
-
-            if clock.is_birthday:
-                birthday_animation.animate()
-
-            # Check the state of the button
-            current_state = button.current_state
-            if current_state:
-                button_animation = button_animations[current_state - 1]
-                # Some animations will only be run if the button is currently pressed down. If it should be run after
-                # release until the button is pressed, add `continue_after_button_pressed = True` to the animation
-                # instance
-                if button.is_held or getattr(button_animation, 'continue_after_button_pressed', False):
-                    button_animation.animate()
-
-            # And refresh the display
-            displayer.display()
-
-        except Exception as e:
-            cleanup = True
-            exception = e
-
-        if cleanup:
-            displayer.cleanup()
+            wordclock.tick()
+        except Exception:
+            wordclock.cleanup(exit=False)
             if exception:
                 raise exception
-            sys.exit(0)

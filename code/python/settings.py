@@ -8,7 +8,7 @@ display_cls = DotstarDisplay
 
 
 birthdays = [
-    Birthday(month=9, day=13)
+    Birthday(month=9, day=15)
 ]
 
 SIMULATE_KEYPRESS = True
