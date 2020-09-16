@@ -34,11 +34,11 @@ class BaseButton(GPIOButton):
     def __init__(self, pin, state_manager, when_held=None, when_released=None, **kwargs):
         super().__init__(pin, **kwargs)
         self._state_manager = state_manager
-        self.when_held = self.__button_held  # _when_held is already an attribute of GPIOButton
-        self.when_released = self.__button_released  # same as _when_held
+        self.when_held = self.__button_held
+        self.when_released = self.__button_released
 
-        self.__when_held = when_held
-        self.__when_released = when_released
+        self.__when_held = when_held  # _when_held is already an attribute of GPIOButton
+        self.__when_released = when_released  # same as _when_held
 
     def __button_held(self):
         self._state_manager.increase()
