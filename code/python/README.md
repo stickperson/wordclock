@@ -18,6 +18,8 @@ Once this is setup, you can run `python service.py`
 
 
 ## TODO
+* Graceful shutdown
+* Show images (https://github.com/bk1285/rpi_wordclock/blob/master/wordclock_tools/wordclock_display.py#L196)
 * ABC for displays?
 * Think about overall structure-- does `models.py` still make sense?
 * GPIO button handler. Maybe [this](https://github.com/gpiozero/gpiozero)
