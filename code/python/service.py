@@ -100,5 +100,4 @@ if __name__ == '__main__':
             wordclock.tick()
         except Exception:
             wordclock.cleanup(exit=False)
-            if exception:
-                raise exception
+            raise

@@ -28,7 +28,7 @@ class ColorCycle(Animation):
     def draw(self):
         self.displayer.current_color = self.color
         if self.words:
-            self.displayer.batch_update(self.words)
+            self.displayer.batch_update(self.words, color=self.color)
         else:
             self.clock.update()
         next(self._generator)

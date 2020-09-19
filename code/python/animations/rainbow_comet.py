@@ -28,7 +28,7 @@ class RainbowComet(AdafruitRainbowComet):
                     continue
                 draw_at = draw_at % self._num_pixels
 
-            self.pixel_object[draw_at] = color
+            self.displayer.update_position(draw_at, color=color)
 
         self._tail_start += self._direction
 
@@ -42,3 +42,5 @@ class RainbowComet(AdafruitRainbowComet):
                 self.reset()
             if self.reverse == self._initial_reverse and self.draw_count > 0:
                 self.cycle_complete = True
+
+        self.displayer.display()

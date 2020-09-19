@@ -1,4 +1,5 @@
 from adafruit_led_animation.animation.pulse import Pulse as AdafruitPulse
+from adafruit_led_animation.helper import pulse_generator
 
 
 class Pulse(AdafruitPulse):
@@ -30,3 +31,9 @@ class Pulse(AdafruitPulse):
     def change_color(self, color):
         self.color = color
         self.reset()
+
+    def reset(self):
+        """
+        Resets the animation.
+        """
+        self._generator = pulse_generator(self._period, self, dotstar_pwm=True)

@@ -1,3 +1,4 @@
+from unittest.mock import Mock
 import random
 import string
 
@@ -9,6 +10,7 @@ class ConsoleDisplay:
     Note: this does NOT work with animations.
     """
     def __init__(self, rows, columns, *args, **kwargs):
+        self.pixels = Mock()
         self.rows = rows
         self.columns = columns
         self.default_color = self.current_color = 'test'
@@ -19,13 +21,13 @@ class ConsoleDisplay:
     def reset(self):
         self.matrix = ['-' for _ in range(self.rows * self.columns)]
 
-    def update_position(self, position, value=1):
+    def update_position(self, position, color=None, value=1):
         self.matrix[position] = value
 
-    def batch_update(self, words):
+    def batch_update(self, words, **kwargs):
         for word in words:
-            for idx in range(word.start_idx, word.end_idx+1):
-                self.update_position(idx, word.display_value[idx - word.start_idx])
+            for idx in range(word.start_idx, word.end_idx + 1):
+                self.update_position(idx, value=word.display_value[idx - word.start_idx], **kwargs)
 
     def display(self):
         grid = []

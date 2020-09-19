@@ -9,13 +9,13 @@ class DotstarDisplay:
         self.max_brightness = self.current_brightness = max_brightness
         self.reset()
 
-    def batch_update(self, words):
+    def batch_update(self, words, color=None):
         """
         Helper function to update multiple words at once
         """
         for word in words:
             for idx in range(word.start_idx, word.end_idx + 1):
-                self.update_position(idx)
+                self.update_position(idx, color=color)
 
     def cleanup(self):
         """
@@ -41,15 +41,18 @@ class DotstarDisplay:
         self.current_color = self.default_color
         self.display()
 
-    def update_position(self, position, color=None):
+    def update_position(self, position, color=None, **kwargs):
         """
         Updates an individual led. Uses the current color of the display if no color is supplied.
         """
         color = color or self.current_color
-        if isinstance(color, tuple):
-            color = list(color)
 
-        color.append(self.current_brightness / 100)
+        # If brightness is not explicitly set as part of color then use the current brightness
+        if len(color) != 4:
+            if isinstance(color, tuple):
+                color = list(color)
+            color.append(self.current_brightness / 100)
+
         self.pixels[position] = tuple(color)
 
     def wheel(self, pos):
