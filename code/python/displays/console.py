@@ -31,6 +31,7 @@ class ConsoleDisplay:
 
     def display(self):
         grid = []
+        print('d')
         for idx in range(0, len(self.matrix), self.columns):
             grid.append(self.matrix[idx:idx+self.columns])
         print('\n')

@@ -26,7 +26,7 @@ class ColorCycle(Animation):
         self.cycle_complete = True
 
     def draw(self):
-        self.displayer.current_color = self.color
+        # self.displayer.current_color = self.color
         if self.words:
             self.displayer.batch_update(self.words, color=self.color)
         else:
