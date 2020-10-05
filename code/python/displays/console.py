@@ -2,6 +2,10 @@ from unittest.mock import Mock
 import random
 import string
 
+from rich import print as rprint
+from rich.table import Table
+from rich.text import Text
+
 
 class ConsoleDisplay:
     """
@@ -13,13 +17,15 @@ class ConsoleDisplay:
         self.pixels = Mock()
         self.rows = rows
         self.columns = columns
-        self.default_color = self.current_color = 'test'
+        self.default_color = self.current_color = (256, 0, 0)
         self.matrix = None
         self.max_brightness = self.current_brightness = 100
         self.reset()
 
     def reset(self):
         self.matrix = ['-' for _ in range(self.rows * self.columns)]
+        self.current_color = self.default_color
+        self.display()
 
     def update_position(self, position, color=None, value=1):
         self.matrix[position] = value
@@ -30,14 +36,18 @@ class ConsoleDisplay:
                 self.update_position(idx, value=word.display_value[idx - word.start_idx], **kwargs)
 
     def display(self):
-        grid = []
-        print('d')
+        grid = Table.grid(expand=True)
+        [grid.add_column() for _ in range(self.columns)]
         for idx in range(0, len(self.matrix), self.columns):
-            grid.append(self.matrix[idx:idx+self.columns])
-        print('\n')
-        print('\n')
-        for g in grid:
-            print(g)
+            row_data = self.matrix[idx:idx + self.columns]
+            styleized_data = []
+            for d in row_data:
+                text = Text()
+                r, g, b = self.current_color
+                text.append(d, style=f'rgb({int(r)},{int(g)},{int(b)})')
+                styleized_data.append(text)
+            grid.add_row(*styleized_data)
+        rprint(grid)
 
     def wheel(self, idx):
         return random.choice(string.ascii_letters)
