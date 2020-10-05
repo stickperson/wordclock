@@ -34,10 +34,14 @@ class Rainbow(Animation):
                 color_idx = ((self._iteration * self._delta) + (self._delta * idx)) % self._max_idx
                 color = list(self.colors[color_idx])
                 color.append(self._displayer.current_brightness / 100)
+                try:
+                    value = word.display_value[idx]
+                except IndexError:
+                    value = 'X'
                 self._displayer.update_position(
                     idx + word.start_idx,
                     color=color,
-                    value=word.display_value[idx]
+                    value=value
                 )
         self._iteration += 1
         self._iteration = self._iteration % self._max_idx
