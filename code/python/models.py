@@ -138,4 +138,5 @@ class Clock:
     def update(self, *args, **kwargs):
         now = datetime.datetime.now()
         words = self._determine_words(now.hour, now.minute)
+        self.displayer.clear()
         self.displayer.batch_update(words)

@@ -50,8 +50,10 @@ class WordClock:
         pulse = Pulse(self.clock, self.displayer, self.displayer.pixels, speed=0.05, period=3)
         pulse.run_alone = False
         color_cycle = ColorCycle(self.clock, self.displayer, self.displayer.pixels, speed=0.05)
+        rainbow = Rainbow(
+            self.displayer, self.displayer.pixels, speed=0.1, words=[words['ALL']])
 
-        self.button_animations = [pulse, color_cycle]
+        self.button_animations = [pulse, color_cycle, rainbow]
         button_manager = ButtonStateManager(
             len(self.button_animations), on_reset=self.reset_display_and_clock
         )
