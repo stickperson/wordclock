@@ -19,11 +19,11 @@ class ColorCycle(Animation):
         """
         Use HSV values to generate colors for a smoother animation
         """
-        for h in range(0, 361):
-            r, g, b = colorsys.hsv_to_rgb(h / 360, 1, 1)
-            self._color = (r * 255, g * 255, b * 255)
-            yield
-        self.cycle_complete = True
+        while True:
+            for h in range(0, 361):
+                r, g, b = colorsys.hsv_to_rgb(h / 360, 1, 1)
+                self._color = (r * 255, g * 255, b * 255)
+                yield
 
     def draw(self):
         self.displayer.current_color = self.color
