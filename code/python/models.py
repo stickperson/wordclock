@@ -84,8 +84,8 @@ class WordClock:
         Determines which words to display based on the hour and minute. Could probably separate this into minutes/hours.
 
         Args:
-            hour (int)
-            minute (int)
+            hour (int): current hour
+            minute (int): current minute
 
         Returns:
             set: set of Word instances
@@ -157,6 +157,9 @@ class WordClock:
         self.displayer.cleanup()
 
     def update(self):
+        """
+        Updates the display with the current time
+        """
         now = datetime.datetime.now()
         words = self._determine_words(now.hour, now.minute)
         self.displayer.clear()

@@ -25,9 +25,13 @@ class ColorCycle(Animation):
                 yield
 
     def draw(self):
+        """
+        Updates the display's color and forces a refresh of the clock. If the animation is only for particular words,
+        those words are updated. Otherwise, the clock is updated as normal with new colors.
+        """
+        next(self._generator)
         self.clock.displayer.current_color = self.color
         if self.words:
             self.clock.displayer.batch_update(self.words, color=self.color)
         else:
             self.clock.update()
-        next(self._generator)

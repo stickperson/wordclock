@@ -25,9 +25,15 @@ class ConsoleDisplay(BaseDisplay):
         self.reset()
 
     def clear(self):
+        """
+        Clears everything from the display.
+        """
         self.matrix = [('-', (0, 0, 0)) for _ in range(self.rows * self.columns)]
 
     def reset(self):
+        """
+        Clears the display and resets the color to the default
+        """
         self.clear()
         self.current_color = self.default_color
         self.display()
