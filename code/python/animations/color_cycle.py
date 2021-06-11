@@ -21,7 +21,7 @@ class ColorCycle(Animation):
         while True:
             for h in range(0, 361):
                 r, g, b = colorsys.hsv_to_rgb(h / 360, 1, 1)
-                self._color = (r * 255, g * 255, b * 255)
+                self.color = (r * 255, g * 255, b * 255)
                 yield
 
     def draw(self):

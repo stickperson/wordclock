@@ -42,13 +42,7 @@ class Birthday:
     month: int
 
 
-# Unsure if there are any good libraries for button management.
-class Button:
-    last_pressed: float = 0
-    pressed: bool = False
-
-
-@dataclass
+@dataclass(frozen=True)
 class Word:
     start_idx: int
     end_idx: int
