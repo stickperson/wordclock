@@ -169,6 +169,7 @@ class WordClock:
         """
         Immediately fetch the time and setup button/timers
         """
+        self.check_birthday()
         self.update()
         self._setup_button_handlers()
         self._setup_timers()

@@ -8,7 +8,7 @@ display_cls = ConsoleDisplay
 
 
 birthdays = [
-    Birthday(month=10, day=4)
+    Birthday(month=6, day=10)
 ]
 
 SIMULATE_KEYPRESS = True

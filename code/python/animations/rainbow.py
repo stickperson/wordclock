@@ -31,7 +31,7 @@ class Rainbow(Animation):
 
     def draw(self):
         for word in self._words:
-            for idx in range(word.end_idx - word.start_idx):
+            for idx in range(word.end_idx + 1 - word.start_idx):
                 color_idx = ((self._iteration * self._delta) + (self._delta * idx)) % self._max_idx
                 color = list(self.colors[color_idx])
                 color.append(self._clock.displayer.current_brightness / 100)
