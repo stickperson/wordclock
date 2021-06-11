@@ -1,8 +1,10 @@
 import adafruit_dotstar
 import board
 
+from .base import BaseDisplay
 
-class DotstarDisplay:
+
+class DotstarDisplay(BaseDisplay):
     def __init__(self, rows, columns, max_brightness=100, default_color=(255, 255, 255)):
         self.pixels = adafruit_dotstar.DotStar(board.SCK, board.MOSI, rows * columns, auto_write=False)
         self.default_color = self.current_color = default_color

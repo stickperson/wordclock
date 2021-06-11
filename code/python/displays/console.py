@@ -6,8 +6,10 @@ from rich import print as rprint
 from rich.table import Table
 from rich.text import Text
 
+from .base import BaseDisplay
 
-class ConsoleDisplay:
+
+class ConsoleDisplay(BaseDisplay):
     """
     Display class which prints to the console for debugging purposes.
 
