@@ -80,7 +80,16 @@ class WordClock:
 
     # TODO. Break into smaller functions.
     def _determine_words(self, hour, minute):
-        # Determines which words to display based on the hour and minute. Could probably separate this into minutes/hours.
+        """
+        Determines which words to display based on the hour and minute. Could probably separate this into minutes/hours.
+
+        Args:
+            hour (int)
+            minute (int)
+
+        Returns:
+            set: set of Word instances
+        """
         hour_displays = {
             0: 'TWELVE',
             1: 'ONE',
