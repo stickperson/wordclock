@@ -7,10 +7,9 @@ class ColorCycle(Animation):
     """
     Very similar to Adafruit's ColorCycle except with a different color generator function
     """
-    def __init__(self, clock, displayer, *args, words=None, **kwargs):
-        super().__init__(color=displayer.current_color, *args, **kwargs)
+    def __init__(self, clock, *args, words=None, **kwargs):
+        super().__init__(color=clock.displayer.current_color, *args, **kwargs)
         self.clock = clock
-        self.displayer = displayer
         self.words = words
         self._generator = self._color_generator()
         next(self._generator)
@@ -26,9 +25,9 @@ class ColorCycle(Animation):
                 yield
 
     def draw(self):
-        self.displayer.current_color = self.color
+        self.clock.displayer.current_color = self.color
         if self.words:
-            self.displayer.batch_update(self.words, color=self.color)
+            self.clock.displayer.batch_update(self.words, color=self.color)
         else:
             self.clock.update()
         next(self._generator)

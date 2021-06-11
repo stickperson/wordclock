@@ -41,7 +41,7 @@ class ConsoleDisplay:
 
     def display(self):
         grid = Table.grid(expand=False)
-        [grid.add_column() for _ in range(self.columns)]
+        [grid.add_column(justify='center') for _ in range(self.columns)]
         for idx in range(0, len(self.matrix), self.columns):
             row_data = self.matrix[idx:idx + self.columns]
             styleized_data = []

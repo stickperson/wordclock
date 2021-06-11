@@ -1,14 +1,15 @@
-from adafruit_led_animation.animation import Animation
 import colorsys
+
+from adafruit_led_animation.animation import Animation
 
 
 class Rainbow(Animation):
     """
     Fills words with a rainbow, where each letter has a different color determined by the delta
     """
-    def __init__(self, displayer, *args, delta=10, words=None, **kwargs):
-        super().__init__(color=displayer.current_color, *args, **kwargs)
-        self._displayer = displayer
+    def __init__(self, clock, *args, delta=10, words=None, **kwargs):
+        super().__init__(color=clock.displayer.current_color, *args, **kwargs)
+        self._clock = clock
         self._words = words
         self._delta = delta
 
@@ -33,16 +34,16 @@ class Rainbow(Animation):
             for idx in range(word.end_idx - word.start_idx):
                 color_idx = ((self._iteration * self._delta) + (self._delta * idx)) % self._max_idx
                 color = list(self.colors[color_idx])
-                color.append(self._displayer.current_brightness / 100)
+                color.append(self._clock.displayer.current_brightness / 100)
                 try:
                     value = word.display_value[idx]
                 except IndexError:
                     value = 'X'
-                self._displayer.update_position(
+                self._clock.displayer.update_position(
                     idx + word.start_idx,
                     color=color,
                     value=value
                 )
         self._iteration += 1
         self._iteration = self._iteration % self._max_idx
-        self._displayer.display()
+        self._clock.displayer.display()
