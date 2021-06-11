@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import datetime
-import sys
 
 from animations import ColorCycle, Pulse, Rainbow
 from buttons import ButtonStateManager, MockButton
@@ -148,13 +147,11 @@ class WordClock:
         words = [self.words[k] for k in word_keys]
         return words
 
-    def cleanup(self, *args, exit=True, **kwargs):
+    def cleanup(self):
         """
         Cleanup the display (turns off LEDs etc) and exits the program by default
         """
         self.displayer.cleanup()
-        if exit:
-            sys.exit(0)
 
     def update(self):
         now = datetime.datetime.now()

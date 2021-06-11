@@ -5,7 +5,7 @@ This code is broken up into several components in order to keep things modular. 
 
 The `displays` directory contains files for displaying the state of the clock. Currently, there is support for the APA102 led strip and displaying to the console. The `ConsoleDisplay` is helpful for development. If you would like to use another chipset, you can implement your own display class.
 
-The `models.py` file contains all the knowledge about how to update the clock. The `service.py` file contains the logic for how to use the models.
+The `models.py` file contains all the knowledge about how to update the clock. The `main.py` file contains the logic for how to use the models.
 
 ## Setup
 Configuration should go in the `settings.py` file. The following must be defined:
@@ -14,7 +14,7 @@ Configuration should go in the `settings.py` file. The following must be defined
 * `words`. A mapping between words on the clock, start/stop indices, and optionally display values for non-led displays. The default values are setup to work with the supplied designs.
 * `birthdays`. An array of `Birthday` instances.
 
-Once this is setup, you can run `python service.py`
+Once this is setup, you can run `python main.py`
 
 
 ## TODO
