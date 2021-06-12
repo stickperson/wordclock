@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 import datetime
 
-from animations import ColorCycle, Pulse, Rainbow
-from buttons import ButtonStateManager, MockButton
+from animations import Rainbow
 
 
 class Timer:
@@ -59,11 +58,13 @@ class WordClock:
         )
         self._is_birthday = False
 
-        self.button_animations = []
-        self.button = None
+        self._buttons = []
         self.timers = []
 
         self._startup()
+
+    def add_button(self, button):
+        self._buttons.append(button)
 
     @property
     def is_birthday(self):
@@ -171,29 +172,14 @@ class WordClock:
         """
         self.check_birthday()
         self.update()
-        self._setup_button_handlers()
         self._setup_timers()
 
-    def reset_display_and_clock(self):
+    def reset(self):
         """
         Resets the display to default values and updates the clock.
         """
         self.displayer.reset()
         self.update()
-
-    # TODO. Stop hardcoding this. Possible put it into some sort of configuration file.
-    def _setup_button_handlers(self):
-        pulse = Pulse(self, self.displayer.pixels, speed=0.05, period=3)
-        pulse.run_alone = False
-        color_cycle = ColorCycle(self, self.displayer.pixels, speed=0.05)
-        rainbow = Rainbow(
-            self, self.displayer.pixels, speed=0.1, words=[self.words['ALL']])
-
-        self.button_animations = [pulse, color_cycle, rainbow]
-        button_manager = ButtonStateManager(
-            len(self.button_animations), on_reset=self.reset_display_and_clock
-        )
-        self.button = MockButton(4, button_manager, hold_time=0.5)
 
     def _setup_timers(self):
         check_birthday_timer = Timer(60000, self.check_birthday)  # update every minute
@@ -212,15 +198,9 @@ class WordClock:
         if self.is_birthday and self.birthday_animation:
             self.birthday_animation.animate()
 
-        # Check the state of the button
-        current_state = self.button.current_state
-        if current_state:
-            button_animation = self.button_animations[current_state - 1]
-            # Some animations will only be run if the button is currently pressed down. If it should be run after
-            # release until the button is pressed, add `continue_after_button_pressed = True` to the animation
-            # instance
-            if self.button.is_held or getattr(button_animation, 'continue_after_button_pressed', False):
-                button_animation.animate()
+        # Check the state of all buttons. Do this here instead
+        for button in self._buttons:
+            button.tick()
 
         # And refresh the display
         self.displayer.display()
