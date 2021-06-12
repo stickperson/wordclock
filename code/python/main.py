@@ -22,15 +22,15 @@ def cleanup(cleanup_fn, *args):
 def when_held(animations, button):
     current_state = button.current_state
     if current_state:
-        action = animations[current_state - 1]
+        animation = animations[current_state - 1]
         # Some animations will only be run if the button is currently pressed down. If it should be run after
         # release until the button is pressed, add `continue_after_button_pressed = True` to the animation
         # instance
-        if button.is_held or getattr(action, 'continue_after_button_pressed', False):
-            action.animate()
+        if button.is_held or getattr(animations, 'continue_after_button_pressed', False):
+            animation.animate()
 
 
-def add_buttons(clock):
+def add_color_button(clock):
     pulse = Pulse(clock, clock.displayer.pixels, speed=0.05, period=3)
     pulse.run_alone = False
     color_cycle = ColorCycle(clock, clock.displayer.pixels, speed=0.05)
@@ -53,7 +53,7 @@ def add_buttons(clock):
 if __name__ == '__main__':
     # Setup clock and display
     wordclock = WordClock(display_cls, words, birthdays)
-    add_buttons(wordclock)
+    add_color_button(wordclock)
     signal.signal(signal.SIGTERM, partial(cleanup, wordclock.cleanup))
 
     while True:

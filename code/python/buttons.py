@@ -13,16 +13,16 @@ class ButtonStateManager:
     def __init__(self, num_states, on_reset=None):
         self._num_states = num_states
         self._on_reset = on_reset
-        self._current_state = 0
+        self.current_state = 0
 
     def increase(self):
         """
         Increases the state and resets to inactive after the max state is reached. Optionally
         calls a reset function.
         """
-        self._current_state += 1
-        if self._current_state > self._num_states:
-            self._current_state = 0
+        self.current_state += 1
+        if self.current_state > self._num_states:
+            self.current_state = 0
             if self._on_reset:
                 self._on_reset()
 
@@ -63,7 +63,7 @@ class BaseButton(GPIOButton):
 
     @property
     def current_state(self):
-        return self._state_manager._current_state
+        return self._state_manager.current_state
 
     def tick(self):
         if self._tick_fn:
