@@ -48,6 +48,7 @@ class Word:
     display_value: str = ''
 
 
+# TODO: update to act as a facade to displayer
 class WordClock:
     def __init__(self, display_cls, words, birthdays=None):
         self.words = words
