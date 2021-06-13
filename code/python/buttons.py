@@ -27,7 +27,7 @@ class ButtonStateManager:
                 self._on_reset()
 
 
-class BaseButton(GPIOButton):
+class Button(GPIOButton):
     """
     Extends GPIOButton with default behavior to keep track of how many times the button has been held.
     """
@@ -52,12 +52,12 @@ class BaseButton(GPIOButton):
         self.__when_released = when_released  # same as _when_held
         self._tick_fn = tick_fn
 
-    def __button_held(self):
+    def __button_held(self):  # pragma: no cover
         self._state_manager.increase()
         if self.__when_held:
             self.__when_held(self)
 
-    def __button_released(self):
+    def __button_released(self):  # pragma: no cover
         if self.__when_released:
             self.__when_released(self)
 
@@ -70,7 +70,7 @@ class BaseButton(GPIOButton):
             self._tick_fn(self)
 
 
-class MockButton(BaseButton):
+class MockButton(Button):
     """
     Mock button class that uses signals to catch SIGINT (raised by Ctrl+C) and mimics holding/releasing a button.
     """
@@ -92,8 +92,3 @@ class MockButton(BaseButton):
             self.btn_pin.drive_high()
 
         self._drive_low = not self._drive_low
-
-
-class Button(BaseButton):
-    def __init__(self, pin, state_manager, **kwargs):
-        super().__init__(pin, state_manager, **kwargs)
