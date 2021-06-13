@@ -16,7 +16,7 @@ class Timer:
         self.delay = delay
         self.fn = fn
         self.kwargs = kwargs
-        self._last_updated = None
+        self._last_updated = 0
         self._completed_initial = False
 
     def tick(self):
@@ -26,13 +26,13 @@ class Timer:
             should_update = True
             self._completed_initial = True
         else:
-            diff = now - self.last_updated
+            diff = now - self._last_updated
             milliseconds = diff.total_seconds() * 1000
             if milliseconds >= self.delay:
                 should_update = True
         if should_update:
             self.fn(**self.kwargs)
-            self.last_updated = datetime.datetime.now()
+            self._last_updated = datetime.datetime.now()
 
 
 @dataclass(frozen=True)
