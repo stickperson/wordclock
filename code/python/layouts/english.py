@@ -86,6 +86,9 @@ class EnglishLayout:
         'ALL':      Word(start_idx=0, end_idx=129)
     }
 
+    def __init__(self) -> None:
+        self.birthday_words = [self.WORDS['HAPPY'], self.WORDS['BIRTHDAY']]
+
     def determine_words(self, hour, minute):
         # Always display these words
         word_keys = set(['IT', 'IS'])

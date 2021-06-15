@@ -50,12 +50,12 @@ class Word:
 
 # TODO: update to act as a facade to displayer
 class WordClock:
-    def __init__(self, display_cls, words, birthdays=None):
-        self.words = words
+    def __init__(self, display, layout, birthdays=None):
+        self.layout = layout
         self.birthdays = birthdays or []
-        self.displayer = display_cls(rows=10, columns=13, max_brightness=25)
+        self.displayer = display
         self.birthday_animation = Rainbow(
-            self, self.displayer.pixels, speed=.1, words=[words['HAPPY'], words['BIRTHDAY']]
+            self, self.displayer.pixels, speed=.1, words=layout.birthday_words
         )
         self._is_birthday = False
 
@@ -93,57 +93,7 @@ class WordClock:
             set: set of Word instances
         """
 
-        # Words to display for each 5 minute chunk.
-        minute_words = [
-            ('OCLOCK',),
-            ('MFIVE', 'MINUTES', 'PAST'),
-            ('MTEN', 'MINUTES', 'PAST'),
-            ('QUARTER', 'PAST'),
-            ('TWENTY', 'MINUTES', 'PAST'),
-            ('TWENTY', 'MFIVE', 'MINUTES', 'PAST'),
-            ('HALF', 'PAST'),
-            ('TWENTY', 'MFIVE', 'MINUTES', 'TO'),
-            ('TWENTY', 'MINUTES', 'TO'),
-            ('QUARTER', 'TO'),
-            ('MTEN', 'MINUTES', 'TO'),
-            ('MFIVE', 'MINUTES', 'TO'),
-        ]
-
-        # Build up dictionary to map current minute to its appropriate 5 minute chunk
-        minute_to_chunk = {}
-        for minute_chunk in range(0, 60, 5):
-            for m in range(minute_chunk, minute_chunk + 5):
-                minute_to_chunk[m] = minute_chunk // 5
-
-        # Always display these words
-        word_keys = set(['IT', 'IS'])
-
-        words_for_minute_chunk = minute_words[minute_to_chunk[minute]]
-        word_keys.update(words_for_minute_chunk)
-
-        hour_displays = {
-            0: 'TWELVE',
-            1: 'ONE',
-            2: 'TWO',
-            3: 'THREE',
-            4: 'FOUR',
-            5: 'HFIVE',
-            6: 'SIX',
-            7: 'SEVEN',
-            8: 'EIGHT',
-            9: 'NINE',
-            10: 'HTEN',
-            11: 'ELEVEN',
-            12: 'TWELVE'
-        }
-
-        # Adjust the hour so 12:35 reads "25 minutes to 1"
-        if minute >= 35:
-            hour += 1
-
-        word_keys.add(hour_displays[hour % 12])
-        words = [self.words[k] for k in word_keys]
-        return words
+        return self.layout.determine_words(hour, minute)
 
     def cleanup(self):
         """

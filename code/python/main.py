@@ -5,7 +5,7 @@ from functools import partial
 from animations import ColorCycle, Pulse, Rainbow
 from buttons import ButtonStateManager, MockButton
 from models import WordClock
-from settings import birthdays, display_cls, words
+from example_local_config import birthdays, layout, display
 
 
 def cleanup(cleanup_fn, *args):
@@ -30,12 +30,12 @@ def when_held(animations, button):
             animation.animate()
 
 
-def add_color_button(clock):
+def add_color_button(clock, layout):
     pulse = Pulse(clock, clock.displayer.pixels, speed=0.05, period=3)
     pulse.run_alone = False
     color_cycle = ColorCycle(clock, clock.displayer.pixels, speed=0.05)
     rainbow = Rainbow(
-        clock, clock.displayer.pixels, speed=0.1, words=[clock.words['ALL']])
+        clock, clock.displayer.pixels, speed=0.1, words=[layout.WORDS['ALL']])
 
     button_animations = [pulse, color_cycle, rainbow]
     button_manager = ButtonStateManager(
@@ -52,8 +52,8 @@ def add_color_button(clock):
 
 if __name__ == '__main__':
     # Setup clock and display
-    wordclock = WordClock(display_cls, words, birthdays)
-    add_color_button(wordclock)
+    wordclock = WordClock(display, layout, birthdays)
+    add_color_button(wordclock, layout)
     signal.signal(signal.SIGTERM, partial(cleanup, wordclock.cleanup))
 
     while True:
