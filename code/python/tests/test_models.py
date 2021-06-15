@@ -35,7 +35,7 @@ class TestTimer(unittest.TestCase):
 
 
 class TestWordClockTestCase:
-    display_cls = Mock
+    display_cls = Mock()
 
     def test_check_birthday_true(self, words):
         now = datetime.datetime.now()
@@ -48,3 +48,38 @@ class TestWordClockTestCase:
         birthday = Birthday(month=now.month - 1, day=now.day)
         clock = WordClock(self.display_cls, words, birthdays=[birthday])
         assert clock.is_birthday is False
+
+    @patch('models.datetime')
+    def test_update_displays_current_hour(self, datetime_mock, words):
+        display_cls = Mock()
+        datetime_mock.datetime.now.return_value = datetime.datetime(year=2021, month=6, day=14, hour=1, minute=1)
+        clock = WordClock(display_cls, words)
+        clock.update()
+        expected = [
+            words['IS'],
+            words['IT'],
+            words['OCLOCK'],
+            words['ONE'],
+        ]
+        assert display_cls.return_value.batch_update.call_count == 2
+        latest_call_args = display_cls.return_value.batch_update.call_args.args[0]
+        assert sorted(latest_call_args) == expected
+
+    @patch('models.datetime')
+    def test_update_displays_next_hour(self, datetime_mock, words):
+        display_cls = Mock()
+        datetime_mock.datetime.now.return_value = datetime.datetime(year=2021, month=6, day=14, hour=1, minute=35)
+        clock = WordClock(display_cls, words)
+        clock.update()
+        expected = [
+            words['IS'],
+            words['IT'],
+            words['MFIVE'],
+            words['MINUTES'],
+            words['TO'],
+            words['TWENTY'],
+            words['TWO'],
+        ]
+        assert display_cls.return_value.batch_update.call_count == 2
+        latest_call_args = display_cls.return_value.batch_update.call_args.args[0]
+        assert sorted(latest_call_args) == expected
