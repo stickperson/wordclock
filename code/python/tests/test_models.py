@@ -35,6 +35,7 @@ class TestTimer(unittest.TestCase):
 
 
 class TestWordClockTestCase:
+    # TODO replace this with setUp from unittest.TestCase but need to figure out how to get fixtures to play nice
     display_cls = Mock()
 
     def test_check_birthday_true(self, words):
