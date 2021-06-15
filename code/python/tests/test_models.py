@@ -36,31 +36,31 @@ class TestTimer(unittest.TestCase):
 
 class TestWordClockTestCase:
     # TODO replace this with setUp from unittest.TestCase but need to figure out how to get fixtures to play nice
-    display_cls = Mock()
+    displayer = Mock()
     layout = Mock()
 
     def test_check_birthday_true(self, words):
         now = datetime.datetime.now()
         birthday = Birthday(month=now.month, day=now.day)
-        clock = WordClock(self.display_cls, self.layout, birthdays=[birthday])
+        clock = WordClock(self.displayer, self.layout, birthdays=[birthday])
         assert clock.is_birthday is True
 
     def test_check_birthday_false(self):
         now = datetime.datetime.now()
         birthday = Birthday(month=now.month - 1, day=now.day)
-        clock = WordClock(self.display_cls, self.layout, birthdays=[birthday])
+        clock = WordClock(self.displayer, self.layout, birthdays=[birthday])
         assert clock.is_birthday is False
 
     @patch('models.datetime')
     def test_update_displays_current_hour(self, datetime_mock):
-        display_cls = Mock()
+        displayer = Mock()
         layout = Mock()
         layout.determine_words.return_value = 'hello'
         datetime_mock.datetime.now.return_value = datetime.datetime(year=2021, month=6, day=14, hour=1, minute=1)
-        clock = WordClock(display_cls, layout)
+        clock = WordClock(displayer, layout)
         clock.update()
         assert layout.determine_words.call_count == 2
         assert layout.determine_words.call_args.args == (1, 1)
-        assert display_cls.return_value.batch_update.call_count == 2
-        latest_call_args = display_cls.return_value.batch_update.call_args.args
+        assert displayer.batch_update.call_count == 2
+        latest_call_args = displayer.batch_update.call_args.args
         assert latest_call_args == (layout.determine_words.return_value,)
