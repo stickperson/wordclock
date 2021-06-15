@@ -3,24 +3,25 @@
 ## Introduction
 This code is broken up into several components in order to keep things modular.
 
-The `displays` directory contains files for displaying the state of the clock. Currently, there is support for the APA102 led strip and displaying to the console. The `ConsoleDisplay` is helpful for development. If you would like to use another chipset, you can implement your own display class.
+### Displays
+Chipsets etc. Currently, there is support for the APA102 led strip and displaying to the console. The `ConsoleDisplay` is helpful for development. If you would like to use another chipset, you can implement your own display class.
 
-The `models.py` file contains all the knowledge about how to update the clock. The `main.py` file contains the logic for how to use the models.
+### Layouts
+Represents the physical layout of words on the clock in terms of what positions words are at and what words to return for birthdays and the time of day. New languages can be supported by implementing new layouts.
+
+### Models
+The `models.py` file contains all the knowledge about how to update the clock. The `main.py` file contains the logic for how to use the models. These files should probably be split out. I need to think of a better home.
+
+### Animations
+Custom animations.
 
 ## Setup
-Configuration should go in the `settings.py` file. The following must be defined:
+Configuration can go into a settings file. Here, `example_local_config.py` is provided for testing purposes. The layout, display, and birthdays should be setup here. After defining these, you can import them in `main.py` and run the script.
 
-* `display_cls` determines which sort of display to use. There is currently support for the `APA102` strip as well and `ConsoleDisplay` for development purposes. If you wish to use a different chipset, you can implement your own display class and import it.
-* `words`. A mapping between words on the clock, start/stop indices, and optionally display values for non-led displays. The default values are setup to work with the supplied designs.
-* `birthdays`. An array of `Birthday` instances.
-
-Once this is setup, you can run `python main.py`
-
+This `main.py` file is a proof of concept.
 
 ## TODO
 * Graceful shutdown
 * Show images (https://github.com/bk1285/rpi_wordclock/blob/master/wordclock_tools/wordclock_display.py#L196)
-* Think about overall structure-- does `models.py` still make sense?
-* GPIO button handler. Maybe [this](https://github.com/gpiozero/gpiozero)
 * Tests
 * Fix indices for words (make them half open instead of closed)

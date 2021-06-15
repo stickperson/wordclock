@@ -80,7 +80,6 @@ class WordClock:
                 self._is_birthday = True
                 return
 
-    # TODO. Abstract this away to account for different languages. Some of these can be class variables as well
     def _determine_words(self, hour, minute):
         """
         Determines which words to display based on the hour and minute. Could probably separate this into minutes/hours.
