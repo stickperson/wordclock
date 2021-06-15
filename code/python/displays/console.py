@@ -57,7 +57,7 @@ class ConsoleDisplay(BaseDisplay):
                 value, color = d
                 text = Text()
                 r, g, b, *_ = color  # color can have brightness, so ignore it
-                text.append(value, style=f'bold rgb({int(r)},{int(g)},{int(b)})')
+                text.append(f' {value} ', style=f'bold rgb({int(r)},{int(g)},{int(b)})')
                 styleized_data.append(text)
             grid.add_row(*styleized_data)
         rprint(grid)
