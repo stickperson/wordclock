@@ -57,10 +57,15 @@ class ConsoleDisplay(BaseDisplay):
                 value, color = d
                 text = Text()
                 r, g, b, *_ = color  # color can have brightness, so ignore it
-                text.append(f' {value} ', style=f'bold rgb({int(r)},{int(g)},{int(b)})')
+                text.append(f'  {value}  ', style=f'bold rgb({int(r)},{int(g)},{int(b)})')
                 styleized_data.append(text)
             grid.add_row(*styleized_data)
+            grid.add_row(*['' for _ in range(self.columns)])
+            grid.add_row(*['' for _ in range(self.columns)])
         rprint(grid)
+        rprint('\n')
+        rprint('\n')
+        rprint('\n')
 
     def wheel(self, idx):
         return random.choice(string.ascii_letters)
