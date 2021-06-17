@@ -1,6 +1,6 @@
-from displays.console import ConsoleDisplay
-from layouts.english import EnglishLayout
-from models import Birthday
+from wordclock.displays.console import ConsoleDisplay
+from wordclock.layouts.english import EnglishLayout
+from wordclock.models import Birthday
 
 
 # display_cls = DotstarDisplay

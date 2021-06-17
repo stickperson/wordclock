@@ -1,4 +1,4 @@
-from layouts.english import EnglishLayout
+from wordclock.layouts.english import EnglishLayout
 
 
 class TestEnglishLayout:

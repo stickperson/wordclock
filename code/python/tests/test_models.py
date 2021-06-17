@@ -1,7 +1,7 @@
 import datetime
 import unittest
 from unittest.mock import Mock, call, patch
-from models import Birthday, Timer, WordClock
+from wordclock.models import Birthday, Timer, WordClock
 
 
 class TestTimer(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestTimer(unittest.TestCase):
         self.timer.tick()
         self.fn.assert_called_once_with(**self.kwargs)
 
-    @patch('models.datetime')
+    @patch('wordclock.models.datetime')
     def test_tick_run_after_delay(self, datetime_mock):
         datetime_mock.datetime.now.side_effect = [
             datetime.datetime.now(),
@@ -51,7 +51,7 @@ class TestWordClockTestCase:
         clock = WordClock(self.displayer, self.layout, birthdays=[birthday])
         assert clock.is_birthday is False
 
-    @patch('models.datetime')
+    @patch('wordclock.models.datetime')
     def test_update_displays_current_hour(self, datetime_mock):
         displayer = Mock()
         layout = Mock()

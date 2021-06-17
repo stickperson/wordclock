@@ -1,8 +1,10 @@
-__pycache__
+*.egg-info*
+*.tox
 *.pyc
+__pycache__
 .python-version
 .vscode
 venv
-*.tox
 .coverage
 htmlcov
+pip-wheel-metadata

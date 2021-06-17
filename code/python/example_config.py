@@ -1,10 +1,9 @@
-# from displays.dotstar import DotstarDisplay
-from displays.console import ConsoleDisplay
-from models import Birthday, Word
+from wordclock.displays.dotstar import DotstarDisplay
+from wordclock.models import Birthday, Word
 
 
 # display_cls = DotstarDisplay
-display_cls = ConsoleDisplay
+display_cls = DotstarDisplay
 
 
 birthdays = [

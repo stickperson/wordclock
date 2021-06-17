@@ -1,4 +1,4 @@
-from models import Word
+from wordclock.models import Word
 
 
 def setup_chunks(cls):

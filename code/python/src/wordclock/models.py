@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import datetime
 
-from animations import Rainbow
+from .animations import Rainbow
 
 
 class Timer:
