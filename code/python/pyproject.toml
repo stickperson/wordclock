@@ -2,20 +2,13 @@
 requires = ["setuptools>=40.6.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.flit.metadata]
-module = "wordclock"
-author = "Joe Meissler"
-author-email = "joe.meissler@gmail.com"
-home-page = "http://github.com/stickperson/wordclock"
-classifiers = [ "License :: OSI Approved :: MIT License",]
-description-file = "README.md"
-requires = [
-    "adafruit-circuitpython-dotstar == 2.0.0",
-    "adafruit-circuitpython-led-animation == 2.4.2",
-    "gpiozero == 1.5.1",
-    "rich == 9.0.0",
-    "coverage"
-]
+[tool.coverage.run]
+parallel = true
+branch = true
+source = ["wordclock"]
 
-[tool.flit.metadata.requires-extra]
-test = ["coverage", "pytest"]
+[tool.coverage.paths]
+source = ["src", ".tox/*/site-packages"]
+
+[tool.coverage.report]
+show_missing = true
