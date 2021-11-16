@@ -1,0 +1,3 @@
+DXF files cannot be edited in Inkscape directly. Open the svg and make your edits. When done, select all and choose Path -> Combine. Then Object -> Group. Finally, File -> Save a
+Copy and save it as a dxf. If the image appears odd in the dxf or is missing details, try making sure nothing is selected when you create the dxf. If it's messed up, go back to the
+svg and try Object -> Ungroup followed by Path -> Break Apart.
