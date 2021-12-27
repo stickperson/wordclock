@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock
 from gpiozero import Device
 from gpiozero.pins.mock import MockFactory
-from buttons import ButtonStateManager, Button, MockButton
+from wordclock.buttons import ButtonStateManager, Button, MockButton
 
 
 class TestButtonStateManager:

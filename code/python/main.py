@@ -2,9 +2,9 @@ import signal
 import sys
 from functools import partial
 
-from animations import ColorCycle, Pulse, Rainbow
-from buttons import ButtonStateManager, MockButton
-from models import WordClock
+from wordclock.animations import ColorCycle, Pulse, Rainbow
+from wordclock.buttons import ButtonStateManager, MockButton
+from wordclock.models import WordClock
 from example_local_config import birthdays, layout, display
 
 

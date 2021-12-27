@@ -25,3 +25,4 @@ This `main.py` file is a proof of concept.
 * Show images (https://github.com/bk1285/rpi_wordclock/blob/master/wordclock_tools/wordclock_display.py#L196)
 * Tests
 * Fix indices for words (make them half open instead of closed)
+* Package this puppy up. See this [attrs](https://www.attrs.org/en/latest/contributing.html) and [this blog post](https://hynek.me/articles/testing-packaging/) for inspiration. It would be nice to have all requirements/dev requirements in one place.
